@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Odin - Rock Paper Scissors</title>
+</head>
+<body>
+  <script>
+    let humanScore = 0;
+    let computerScore = 0;
+    function getComputerChoice() {
+      getNumbers = Math.floor(Math.random() * 10);
+      if (getNumbers <= 3) {
+        return "Scissors";
+      } else if (getNumbers <= 6) {
+        return "Paper";
+      } else {
+        return "Rock";
+      }
+    }
+    function getHumanChoice() {
+      return prompt("Choose: Rock, Paper or Scissors");
+    }
+    function playRound(humanChoice, computerChoice) {
+      let score = `Human = ${humanScore} - Computer = ${computerScore}`;
+      if (humanChoice === "Scissors" && computerChoice === "Rock") {
+          computerScore++;
+          console.log(`You Lose | ${score}`);
+        } else if (humanChoice === "Scissors" && computerChoice === "Paper") {
+          console.log(`You Win | ${score}`);
+          humanScore++;
+        } else if (humanChoice === "Scissors" && computerChoice === "Scissors") {
+          console.log(`Draw | ${score}`);
+        } else if (humanChoice === "Rock" && computerChoice === "Rock") {
+          console.log(`Draw | ${score}`);
+        } else if (humanChoice === "Rock" && computerChoice === "Paper") {
+          console.log(`You Lose | ${score}`);
+          computerScore++;
+        } else if (humanChoice === "Rock" && computerChoice === "Scissors") {
+          console.log(`You Win | ${score}`);
+          humanScore++;
+        } else if (humanChoice === "Paper" && computerChoice === "Rock") {
+          console.log(`You Win | ${score}`);
+          humanScore++;
+        } else if (humanChoice === "Paper" && computerChoice === "Paper") {
+          console.log(`Draw | ${score}`);
+        } else if (humanChoice === "Paper" && computerChoice === "Scissors") {
+          console.log(`You Lose | ${score}`);
+          computerScore++;
+        }
+    }
+    function playGame () {
+      for (let i = 0; i < 5; i++) {
+        let humanChoice = getHumanChoice();
+        let computerChoice = getComputerChoice();
+        playRound(humanChoice, computerChoice);
+      }
+      if (humanScore > computerScore) {
+        console.log(`Congrats You Wins!`);
+      } else {
+        console.log(`Computer Wins, Goodluck next time`);
+      }
+    }
+    
+    playGame();
+  </script>
+</body>
+</html>
