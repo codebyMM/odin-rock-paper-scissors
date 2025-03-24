@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Odin - Rock Paper Scissors</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
       font-family: "Poppins", serif;
       background-color: #2B2F3A;
@@ -22,26 +27,31 @@
       flex-direction: column;
       color: #d1d1d1;
     }
+
     h1 {
       color: #EAEAEA;
       padding-bottom: 2rem;
     }
+
     main {
       background: #3A3F4B;
       padding: 2rem;
       border-radius: 8px;
       width: 50vw;
     }
+
     .scoreboard-container {
       display: flex;
       align-items: center;
       flex-direction: column;
       width: 100%;
     }
+
     .scoreboard-container p {
       text-align: right;
       align-self: flex-end;
     }
+
     .button-container {
       width: 100%;
       display: flex;
@@ -50,6 +60,7 @@
       padding: 2rem;
       gap: 1rem;
     }
+
     .button-container button {
       padding: 1.5rem;
       border-radius: 4px;
@@ -60,21 +71,24 @@
       font-size: 1.5em;
       color: #1C2630;
     }
+
     .choice-container {
       padding: 1rem;
       text-align: center;
     }
+
     #result {
       text-align: center;
       background: #7A8B94;
-      padding: 1rem 0;
-      width: 150px;
+      padding: 1rem .5rem;
+      width: 200px;
       margin: 1rem auto;
       font-weight: 700;
       font-size: 1.2em;
     }
   </style>
 </head>
+
 <body>
   <h1>Rock Paper Scissors!</h1>
   <main id="container">
@@ -83,13 +97,13 @@
       <p id="computerScore">Computer: 0</p>
     </div>
     <div class="button-container">
-      <button id="btnRock">
+      <button class="button-pick" id="btnRock" aria-label="rock">
         <i class="fa-solid fa-hand-back-fist"></i>
       </button>
-      <button id="btnPaper">
+      <button class="button-pick" id="btnPaper" aria-label="paper">
         <i class="fa-solid fa-hand"></i>
       </button>
-      <button id="btnScissors">
+      <button class="button-pick" id="btnScissors" aria-label="scissors">
         <i class="fa-solid fa-hand-scissors"></i>
       </button>
     </div>
@@ -102,88 +116,100 @@
     <p id="result">RESULT</p>
   </main>
   <script>
-    const btnRock = document.querySelector('#btnRock');
-    const btnPaper = document.querySelector('#btnPaper');
-    const btnScissors = document.querySelector('#btnScissors');
-    const playerScore = document.querySelector('#playerScore');
-    const computerScore = document.querySelector('#computerScore');
-    const playerChoices = document.querySelector('#playerChoice');
-    const computerChoices = document.querySelector('#computerChoice');
-    const result = document.querySelector('#result');
-    let pScore = 0;
-    let cScore = 0;
-    let pChoice = '';
-    let cChoice = '';
-
-    function getComputerChoice() {
-      getNumbers = Math.floor(Math.random() * 10);
-      if (getNumbers <= 3) {
-        cChoice = 'Scissors';
-      } else if (getNumbers <= 6) {
-        cChoice = 'Paper';
-      } else {
-        cChoice = 'Rock';
+    class Player {
+      constructor() {
+        this.score = 0;
+        this.choice = '';
       }
-      return cChoice;
+
+      updateScore() {
+        this.score++;
+      }
+      setScore(score) {
+        this.score = score;
+      }
+      updateChoice(choice) {
+        this.choice = choice;
+      }
+
+      getScore() {
+        return this.score;
+      }
+      getChoice() {
+        return this.choice;
+      }
     }
-    function getPlayerChoice() {
-      return pChoice;
-    }
-    function playRound(playerChoice, computerChoice) {
-      let p = playerChoice;
-      let c = computerChoice;
-      if ( 
-        playerChoice === 'Paper' && computerChoice === 'Scissors' || 
-        playerChoice === 'Scissors' && computerChoice === 'Rock' || 
-        playerChoice === 'Rock' && computerChoice === 'Paper') {
-          cScore++;
-          result.textContent = `You Lose!`;
-          result.setAttribute("style", "background: #FB4141;");
+
+    class GameManager {
+      constructor() {
+        this.result = '';
+        this.computer = new Player();
+        this.player = new Player();
+      }
+
+      setComputerChoice() {
+        let choices = ['rock', 'paper', 'scissors'];
+        let index = Math.floor(Math.random() * choices.length);
+        this.computer.updateChoice(choices[index]);
+      }
+
+      setPlayerChoice(choice) {
+        this.player.updateChoice(choice);
+      }
+
+      playRound() {
+        let playerChoice = this.player.getChoice();
+        let computerChoice = this.computer.getChoice();
+        if (
+          (playerChoice === 'rock' && computerChoice === 'rock') ||
+          (playerChoice === 'paper' && computerChoice === 'paper') ||
+          (playerChoice === 'scissors' && computerChoice === 'scissors')
+        ) {
+          this.result = 'Tied';
         } else if (
-          playerChoices === 'Paper' && computerChoice === 'Rock' || 
-          playerChoice === 'Scissors' && computerChoice === 'Paper' ||
-          playerChoice === 'Rock' && computerChoice === 'Scissors') {
-            pScore++;
-            result.textContent = `You Win!`;
-            result.setAttribute("style", "background: #16C47F;");
-          } else {
-            result.textContent = `Draw!`;
-            result.setAttribute("style", "background: #213555;");
-        }
-        playerScore.textContent = `Player: ${pScore}`;
-        computerScore.textContent = `Computer: ${cScore}`;
-        playerChoices.textContent = `Player Choice: ${p}`;
-        computerChoices.textContent = `Computer Choice: ${c}`;
-    }
-    function playGame () {
-      let players = getPlayerChoice();
-      let computers = getComputerChoice();
-      playRound(players, computers);
-      if (pScore == 5 || cScore == 5) {
-        if (pScore > cScore) {
-          alert(`Congratulation, You Win!`);
-        } else if (pScore === cScore) {
-          alert(`Its Draw, No Winner`);
+          (playerChoice === 'rock' && computerChoice === 'paper') ||
+          (playerChoice === 'paper' && computerChoice === 'scissors') ||
+          (playerChoice === 'scissors' && computerChoice === 'rock')
+        ) {
+          this.result = 'Computer Win';
+          this.computer.updateScore();
         } else {
-          alert(`You Lose, Good Luck Next Time`);
+          this.result = 'Player Win';
+          this.player.updateScore();
         }
-        pScore = 0;
-        cScore = 0;
+        document.querySelector('#playerChoice').innerText = `Player Choice: ${playerChoice}`;
+        document.querySelector('#computerChoice').innerText = `Computer Choice: ${computerChoice}`;
+        document.querySelector('#result').innerText = this.result;
+        document.querySelector('#playerScore').innerText = `Player: ${this.player.getScore()}`;
+        document.querySelector('#computerScore').innerText = `Computer: ${this.computer.getScore()}`;
+      }
+
+      playGame() {
+        if (this.player.getScore() === 5 || this.computer.getScore() === 5) {
+          alert('The Game Finish');
+          this.player.setScore(0);
+          this.computer.setScore(0);
+
+          document.querySelector('#playerScore').innerText = `Player: ${this.player.getScore()}`;
+          document.querySelector('#computerScore').innerText = `Computer: ${this.computer.getScore()}`;
+          document.querySelector('#result').innerText = "New Game Started!";
+          return;
+        }
+        this.setComputerChoice();
+        this.playRound();
       }
     }
+    const game1 = new GameManager();
 
-    btnRock.addEventListener('click', (e) => {
-      pChoice = 'Rock';
-      playGame();
-    });
-    btnPaper.addEventListener('click', (e) => {
-      pChoice = 'Paper';
-      playGame();
-    });
-    btnScissors.addEventListener('click', (e) => {
-      pChoice = 'Scissors';
-      playGame();
+    const button = document.querySelectorAll('.button-pick');
+    button.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        let playerChoice = e.currentTarget.getAttribute("aria-label");
+        game1.setPlayerChoice(playerChoice);
+        game1.playGame();
+      });
     });
   </script>
 </body>
+
 </html>
